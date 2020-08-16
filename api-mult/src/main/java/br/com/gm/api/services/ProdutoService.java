@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.management.OperationsException;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -39,17 +38,12 @@ public class ProdutoService {
 	 * @return
 	 * @throws OperationsException 
 	 */
-	public Boolean atualizar(Integer id, ProdutoDTO newProduto) throws OperationsException {
-		Boolean sucesso = false;
-		try {
-			Produto produtoOld = buscarProdutoById(id);
-			BeanUtils.copyProperties(newProduto, produtoOld, "categoria", "valor");
-			produtoRepository.save(produtoOld);
-			sucesso = true;
-		} catch (Exception e) {
-			throw new OperationsException("Erro ao atualizar");
-		}
-		return sucesso;
+	public Produto atualizar(Integer id, ProdutoDTO newProduto) throws OperationsException {
+		Produto produtoOld = buscarProdutoById(id);
+		produtoOld.setValor(newProduto.getValor());
+		produtoOld.setCategoria(newProduto.getCategoria());
+		produtoRepository.save(produtoOld);
+		return produtoOld;
 	}
 	
 	/**

@@ -36,7 +36,7 @@ public class ProdutoResource {
 	private ProdutoService produtoService;
 	
 	
-	@GetMapping(value= "/all")
+	@GetMapping(value= "/all", produces= MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> listAll(){
 		return new ResponseEntity<>(produtoRepository.findAll(), HttpStatus.OK);
 	}
@@ -46,13 +46,13 @@ public class ProdutoResource {
 		return new ResponseEntity<>(produtoRepository.findAll(pageable), HttpStatus.OK);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping(value = "/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		return produtoRepository.findById(id).map(record -> ResponseEntity.ok().body(record))
 				.orElse(ResponseEntity.notFound().build());
 	}
 
-	@PostMapping
+	@PostMapping(produces= MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> save(@RequestBody Produto obj) {
 		Produto produto = obj;
 		produtoRepository.save(produto);
@@ -60,20 +60,18 @@ public class ProdutoResource {
 				: ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro");
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping(value = "/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody ProdutoDTO newProduto) throws OperationsException {
-		Boolean succes = produtoService.atualizar(id, newProduto);
-		return succes != false ? ResponseEntity.ok().body("Atualizado com sucesso.")
-				: ResponseEntity.badRequest().body("Erro ao Atualizar");
+		return ResponseEntity.ok().body(produtoService.atualizar(id, newProduto));
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping(value = "/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> delete(@PathVariable Integer id) {
 		produtoRepository.deleteById(id);
 		return ResponseEntity.ok().body("Excluido com sucesso.");
 	}
 	
-	@GetMapping("/pesquisa")
+	@GetMapping(value = "/pesquisa", produces= MediaType.APPLICATION_JSON_VALUE)
 	public Page<Produto> pesquisar(@RequestParam(required = false) String nome, @RequestParam(required = false) String categoria, Pageable pageable) {
 		return produtoService.filtrar(nome, categoria, pageable);
 	}
