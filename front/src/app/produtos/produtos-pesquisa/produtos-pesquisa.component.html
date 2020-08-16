@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="ui-g">
+
+    <form autocomplete="off" (ngSubmit)="pesquisar()">
+
+      <div class="ui-g-12">
+        <h1>Produtos</h1>
+      </div>
+
+      <div class="ui-g-12 ui-fluid">
+        <label>Nome</label>
+        <input pInputText type="text" name="nome"
+          [(ngModel)]="filtro.nome" maxlength="100">
+      </div>
+
+      <div class="ui-g-12 ui-md-6 ui-fluid">
+        <label>Categoria</label>
+        <p-dropdown name="categoria" [autoWidth]="false"
+          [options]="categorias" [(ngModel)]="filtro.categoria"
+          placeholder="Selecione"></p-dropdown>
+      </div>
+
+      <div class="ui-g-12">
+        <button pButton type="submit" label="Pesquisar"></button>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <p-dataTable [value]="produtos" [responsive]="true"
+          emptyMessage="Nenhum produto encontrado"
+          [paginator]="true" [rows]="filtro.itensPorPagina"
+          [lazy]="true" [totalRecords]="totalRegistros"
+          (onLazyLoad)="aoMudarPagina($event)"
+          #tabela>
+        <p-column field="id" header="Id" hidden="true"></p-column>
+        <p-column field="nome" header="Nome"></p-column>
+        <p-column field="categoria.descricao" header="Categoria"></p-column>
+        <p-column field="valor" header="Valor" styleClass="col-valor">
+          <ng-template let-val="rowData" pTemplate="body">
+            <span >{{ val.valor | number:'1.2-2' }}</span>
+          </ng-template>
+        </p-column>
+        <p-column styleClass="col-acoes">
+            <ng-template let-prod="rowData" pTemplate="body">
+              <a pButton icon="fa-pencil" pTooltip="Editar"
+                tooltipPosition="top"
+                [routerLink]="['/produtos', prod.id]"></a>
+              <button pButton icon="fa-trash"
+                pTooltip="Excluir" tooltipPosition="top"
+                (click)="confirmarExclusao(prod)"></button>
+              <a pButton icon="fa-search" pTooltip="Consultar"
+                tooltipPosition="top"
+                [routerLink]="['/produtos', prod.id]"></a>
+            </ng-template>
+        </p-column>
+      </p-dataTable>
+    </div>
+
+    <div class="ui-g-12">
+      <a pButton label="Novo Produto" routerLink="/produtos/novo"></a>
+    </div>
+
+  </div>
+
+</div>
